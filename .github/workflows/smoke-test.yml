@@ -1,0 +1,46 @@
+name: Production Smoke Test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE_URL: https://sproutfinance.app
+
+    steps:
+      - name: Check homepage and OAuth routes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MOBILE_UA='Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
+          OAUTH_PATH='/oauth?oauth_state_id=gha_smoke_test'
+          CCO_OAUTH_PATH='/cco-oauth?oauth_state_id=gha_smoke_test'
+
+          # Netlify deploy can lag behind Git push. Retry checks for up to 8 minutes.
+          for i in {1..24}; do
+            echo "Attempt $i/24"
+
+            homepage="$(curl -fsSL "${BASE_URL}/" || true)"
+            oauth_location="$(curl -sS -o /dev/null -D - -A "$MOBILE_UA" "${BASE_URL}${OAUTH_PATH}" | awk -F': ' 'tolower($1)=="location" {print $2}' | tr -d '\r' || true)"
+            cco_oauth_location="$(curl -sS -o /dev/null -D - -A "$MOBILE_UA" "${BASE_URL}${CCO_OAUTH_PATH}" | awk -F': ' 'tolower($1)=="location" {print $2}' | tr -d '\r' || true)"
+
+            if [[ "$homepage" == *"Sprout Finance"* ]] && [[ "$oauth_location" == sprout://oauth* ]] && [[ "$cco_oauth_location" == cardiq://oauth* ]]; then
+              echo "Smoke test passed."
+              exit 0
+            fi
+
+            echo "Homepage marker present: $([[ "$homepage" == *"Sprout Finance"* ]] && echo yes || echo no)"
+            echo "OAuth location: ${oauth_location:-<missing>}"
+            echo "CCO OAuth location: ${cco_oauth_location:-<missing>}"
+            sleep 20
+          done
+
+          echo "Smoke test failed after retries."
+          exit 1
