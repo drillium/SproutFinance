@@ -2,5 +2,35 @@
   publish = "dist"
   command = "npm run build"
 
+[[redirects]]
+  from = "/oauth"
+  to = "https://ygfshjjjdsmkptkgmxao.supabase.co/functions/v1/plaid/oauth"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/oauth/*"
+  to = "https://ygfshjjjdsmkptkgmxao.supabase.co/functions/v1/plaid/oauth/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/cco-oauth"
+  to = "https://ygfshjjjdsmkptkgmxao.supabase.co/functions/v1/plaid/cco-oauth"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/cco-oauth/*"
+  to = "https://ygfshjjjdsmkptkgmxao.supabase.co/functions/v1/plaid/cco-oauth/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/.well-known/apple-app-site-association"
+  to = "https://ygfshjjjdsmkptkgmxao.supabase.co/functions/v1/plaid/.well-known/apple-app-site-association"
+  status = 200
+  force = true
+
 [template]
   required-extensions = ["supabase"]

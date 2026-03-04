@@ -1,71 +1,352 @@
 ---
-import { getEntry } from "astro:content";
-import Alert from "../components/Alert.astro";
-import Guide from "../components/Guide.astro";
-import Layout from "../components/Layout.astro";
-import TableRow from "../components/TableRow.astro";
-import { supabase } from "../utils/database";
-
-export const prerender = false;
-
-let frameworks;
-let frameworksError;
-
-// Fetch frameworks data from Supabase if connection is set up
-if (supabase) {
-  const { data, error } = await supabase
-    .from("frameworks")
-    .select("*")
-    .order("likes", { ascending: false });
-  frameworks = data;
-  frameworksError = error;
-}
-
-// Get guides
-const connectGuide = await getEntry("guides", "guide-connect-supabase");
-const fetchDataGuide = await getEntry("guides", "guide-fetch-data");
 ---
 
-<Layout title="Web Frameworks">
-  {
-    supabase ? (
-      frameworks ? (
-        <>
-          <h1 class="mb-8 text-4xl font-bold">
-            Vote for Your Favorite Web Framework
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sprout Finance | Personal Finance for iPhone</title>
+    <meta
+      name="description"
+      content="Sprout Finance helps you track spending, manage investments, and stay in control of your money in one clean iPhone app."
+    />
+  </head>
+  <body>
+    <div class="page-bg" aria-hidden="true"></div>
+
+    <main class="shell">
+      <header class="topbar">
+        <a href="/" class="brand" aria-label="Sprout Finance home">
+          <span class="brand-mark" aria-hidden="true"></span>
+          Sprout Finance
+        </a>
+        <a href="mailto:support@sproutfinance.app" class="ghost-btn">Contact</a>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Personal finance, simplified</p>
+          <h1>
+            See your money clearly.
+            <span>Make smarter decisions faster.</span>
           </h1>
-          <table class="w-full text-left">
-            <thead>
-              <tr class="font-mono text-base border-t border-b">
-                <th>Name</th>
-                <th>Logo</th>
-                <th>Likes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {frameworks?.map((framework) => (
-                <TableRow framework={framework} />
-              ))}
-            </tbody>
-          </table>
-        </>
-      ) : (
-        <>
-          {frameworksError && (
-            <Alert
-              title={frameworksError.code}
-              text={frameworksError.message}
-              variant="error"
-            />
-          )}
-          {fetchDataGuide && <Guide guide={fetchDataGuide} />}
-        </>
-      )
-    ) : (
-      <>
-        <Alert title="Finish setting up your new site" text="Before your website is ready, you must complete the steps from the guide below to create, populate, and connect your Supabase database."/>
-        {connectGuide && <Guide guide={connectGuide} />}
-      </>
-    )
+          <p class="lead">
+            Sprout combines spending, cash flow, and investment visibility into one iPhone experience built for real-world decisions.
+          </p>
+          <div class="cta-row">
+            <a class="primary-btn" href="https://apps.apple.com" target="_blank" rel="noreferrer">Download on the App Store</a>
+            <a class="secondary-btn" href="/health">Service Status</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Snapshot metrics">
+          <div class="metric-card">
+            <p>Monthly spend</p>
+            <strong>$4,180</strong>
+            <span class="good">-11% vs last month</span>
+          </div>
+          <div class="metric-card">
+            <p>Budget remaining</p>
+            <strong>$1,240</strong>
+            <span>14 days left</span>
+          </div>
+          <div class="metric-card">
+            <p>Portfolio trend</p>
+            <strong>+7.2%</strong>
+            <span>Year to date</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="features">
+        <article>
+          <h2>All accounts, one clear dashboard</h2>
+          <p>Track balances, transactions, and recurring charges in one place without jumping between financial apps.</p>
+        </article>
+        <article>
+          <h2>Insights you can use right now</h2>
+          <p>Spot overspending quickly, understand category trends, and take action before month-end surprises.</p>
+        </article>
+        <article>
+          <h2>Secure by default</h2>
+          <p>Bank connections use secure OAuth flows and encrypted transport designed for modern financial data access.</p>
+        </article>
+      </section>
+
+      <section class="closing">
+        <h2>Built for everyday money management.</h2>
+        <p>Sprout gives you a fast, practical view of your finances so you can spend, save, and invest with confidence.</p>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    --bg: #eef6f1;
+    --card: #ffffff;
+    --ink: #10271d;
+    --muted: #3f5d50;
+    --line: #c8dfd2;
+    --primary: #0c9b53;
+    --primary-dark: #087542;
+    --soft: #dff4e8;
   }
-</Layout>
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    color: var(--ink);
+    font-family: "Avenir Next", "Nunito Sans", "Trebuchet MS", sans-serif;
+    line-height: 1.5;
+    background: var(--bg);
+  }
+
+  .page-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(900px 420px at 6% -10%, #dbf2e5 0%, transparent 62%),
+      radial-gradient(900px 500px at 102% 2%, #d3ece0 0%, transparent 58%),
+      var(--bg);
+  }
+
+  .shell {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 30px 22px 42px;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 34px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+
+  .brand-mark {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: linear-gradient(145deg, #2bce79, var(--primary));
+    box-shadow: 0 0 0 5px #e6f8ee;
+  }
+
+  .ghost-btn {
+    color: var(--ink);
+    background: var(--soft);
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 1.12fr 0.88fr;
+    gap: 18px;
+    margin-bottom: 16px;
+  }
+
+  .hero-copy,
+  .hero-panel,
+  .features,
+  .closing {
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    background: var(--card);
+  }
+
+  .hero-copy {
+    padding: 34px;
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--muted);
+    font-weight: 800;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.3rem, 4.8vw, 4.1rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+
+  h1 span {
+    display: block;
+    color: #255f43;
+  }
+
+  .lead {
+    margin: 18px 0 22px;
+    max-width: 36ch;
+    color: var(--muted);
+    font-size: clamp(1.02rem, 1.9vw, 1.22rem);
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 11px;
+    flex-wrap: wrap;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-weight: 800;
+    font-size: 0.95rem;
+  }
+
+  .primary-btn {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .primary-btn:hover {
+    background: var(--primary-dark);
+  }
+
+  .secondary-btn {
+    background: var(--soft);
+    color: var(--ink);
+  }
+
+  .hero-panel {
+    padding: 20px;
+    display: grid;
+    gap: 10px;
+    align-content: center;
+  }
+
+  .metric-card {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #fbfffd;
+    padding: 14px;
+  }
+
+  .metric-card p {
+    margin: 0 0 6px;
+    color: var(--muted);
+    font-size: 0.81rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+
+  .metric-card strong {
+    display: block;
+    font-size: 1.75rem;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+
+  .metric-card span {
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+
+  .metric-card .good {
+    color: #067a43;
+    font-weight: 700;
+  }
+
+  .features {
+    margin-top: 14px;
+    padding: 22px;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .features article {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    background: #fcfffd;
+  }
+
+  .features h2,
+  .closing h2 {
+    margin: 0 0 8px;
+    font-size: 1.14rem;
+    letter-spacing: -0.015em;
+  }
+
+  .features p,
+  .closing p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .closing {
+    margin-top: 14px;
+    padding: 24px;
+  }
+
+  @media (max-width: 960px) {
+    .hero {
+      grid-template-columns: 1fr;
+    }
+
+    .features {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-copy,
+    .hero-panel,
+    .features,
+    .closing {
+      border-radius: 20px;
+    }
+
+    .hero-copy {
+      padding: 25px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .shell {
+      padding: 18px 14px 24px;
+    }
+
+    .topbar {
+      margin-bottom: 18px;
+    }
+
+    .hero-copy,
+    .hero-panel,
+    .features,
+    .closing {
+      padding: 16px;
+    }
+
+    .ghost-btn,
+    .primary-btn,
+    .secondary-btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
